@@ -29,11 +29,13 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'title'=>'required',
             'description'=>'required',
             'image'=>'required|image'
         ]);
+        
 
         try{
             $imageName = Str::random().'.'.$request->image->getClientOriginalExtension();

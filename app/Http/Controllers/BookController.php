@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class BookController extends Controller
 {
@@ -34,22 +35,22 @@ class BookController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Book $book)
     {
-        $request->validate([
-            'judul' => 'required',
-            'penulis' => 'required',
-            'penerbit' => 'required',
-            'deskripsi' => 'required',
-            'tahun_terbit' => 'required|date'
+        $book = Book::create([
+            'judul' => $request -> judul,
+            'penerbit' => $request -> penerbit,
+            'penulis' => $request -> penulis,
+            'deskripsi' => $request -> deskripsi,
+            'tahun_terbit' => $request -> tahun_terbit
         ]);
         try{
             return response()->json([
-            'message' => 'Input Berhasil !'])
-        }
-        catch{
+            'message' => 'Input Berhasil !']);
+        }catch(\Exception $e){
+        \Log::error($e->getMessage());
             return response()->json([
-            'message' => 'Input Gagal !'])
+            'message' => 'Input Gagal !']);
         }
         //
     }
@@ -63,7 +64,7 @@ class BookController extends Controller
     public function show(Book $book)
     {
         return response()->json([
-            'product'=>$product
+            'book'=>$book
         ]);
         //
     }
@@ -89,13 +90,15 @@ class BookController extends Controller
     public function update(Request $request, Book $book)
     {
         $request->validate([
-            'title'=>'required',
-            'description'=>'required',
-            'image'=>'nullable'
+            'judul' => $request -> judul,
+            'penerbit' => $request -> penerbit,
+            'penulis' => $request -> penulis,
+            'deskripsi' => $request -> deskripsi,
+            'tahun_terbit' => Carbon::parse($request->tahun_terbit)
         ]);
 
         try{
-            $product->fill($request->post())->update();
+            $buku->fill($request->post())->update();
             return response()->json([
                 'message'=>'Buku Sukses Di Update!!'
             ]);
@@ -107,6 +110,7 @@ class BookController extends Controller
         
         //
     }
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -117,7 +121,7 @@ class BookController extends Controller
     public function destroy(Book $book)
     {
         try {
-            $product->delete();
+            $book->delete();
 
             return response()->json([
                 'message'=>'Buku Berhasil Dihapus!!'
@@ -131,3 +135,4 @@ class BookController extends Controller
         //
     }
 }
+
