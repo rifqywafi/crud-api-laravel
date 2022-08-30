@@ -30,12 +30,11 @@ class ProductController extends Controller
     public function store(Request $request)
     {
 
-        $request->validate([
+        $validator=$request->validate([
             'title'=>'required',
             'description'=>'required',
             'image'=>'required|image'
         ]);
-        
 
         try{
             $imageName = Str::random().'.'.$request->image->getClientOriginalExtension();
@@ -75,12 +74,11 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $request->validate([
+        $validator=$request->validate([
             'title'=>'required',
             'description'=>'required',
             'image'=>'nullable'
         ]);
-
         try{
 
             $product->fill($request->post())->update();

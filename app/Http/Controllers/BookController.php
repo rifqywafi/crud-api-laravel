@@ -15,7 +15,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        return Model::select('id','judul','penulis','penerbit','deskripsi','tahun_terbit')->get();
+        return Book::select('id','judul','penulis','penerbit','deskripsi','tahun_terbit')->get();
         //
     }
 
@@ -37,14 +37,16 @@ class BookController extends Controller
      */
     public function store(Request $request, Book $book)
     {
-        $book = Book::create([
-            'judul' => $request -> judul,
-            'penerbit' => $request -> penerbit,
-            'penulis' => $request -> penulis,
-            'deskripsi' => $request -> deskripsi,
-            'tahun_terbit' => $request -> tahun_terbit
+        $validator=$request->validate([
+            'judul' => 'required',
+            'penerbit' => 'required',
+            'penulis' => 'required',
+            'deskripsi' => 'required',
+            'tahun_terbit' => 'required|date'
         ]);
+
         try{
+        Book::create($request->post());
             return response()->json([
             'message' => 'Input Berhasil !']);
         }catch(\Exception $e){
@@ -90,13 +92,13 @@ class BookController extends Controller
     public function update(Request $request, Book $book)
     {
         $request->validate([
-            'judul' => $request -> judul,
-            'penerbit' => $request -> penerbit,
-            'penulis' => $request -> penulis,
-            'deskripsi' => $request -> deskripsi,
-            'tahun_terbit' => Carbon::parse($request->tahun_terbit)
+            'judul' => 'required',
+            'penerbit' => 'required',
+            'penulis' => 'required',
+            'deskripsi' => 'required',
+            'tahun_terbit' => 'required|date'
         ]);
-
+        
         try{
             $buku->fill($request->post())->update();
             return response()->json([
